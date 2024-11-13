@@ -1,3 +1,6 @@
+"""
+This is the part of the script that only includes the functions that are used in the main script.
+"""
 from pytubefix import YouTube
 import os
 from pydub import AudioSegment
