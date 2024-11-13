@@ -1,5 +1,5 @@
 # **How to Download FFmpeg** #
-https://transloadit.com/devtips/how-to-install-ffmpeg-on-windows-a-complete-guide/
+credit: https://transloadit.com/devtips/how-to-install-ffmpeg-on-windows-a-complete-guide/
 ### Step 1. Downloading the .exe file ###
 1.1 You will need to go to: https://github.com/BtbN/FFmpeg-Builds/releases
 
