@@ -1,6 +1,13 @@
+"""
+This is the main script, its here where you essentially run the whole program.
+
+Args:
+    file_path (str): Path to the Excel file. (MUST BE AN EXCEL FILE)
+    output_path (str): Path to save the output files.
+"""
 from functions import *
 
-
+output_path = "Code/MusicTest/"
 file_path = 'Data.xlsx' 
 urls, start_time, end_time, custom_text = read_data(file_path)
 
@@ -11,9 +18,9 @@ for idx in range(len(urls)):
     end = end_time[idx]     # end time in seconds
     text = custom_text[idx] # custom text to be added to the audio
     #------------ Output files ------------#
-    output_file = f"Code/MusicTest/audio_{idx}.mp3"
-    tts_output_file = f"Code/MusicTest/tts_{idx}.mp3"
-    combined_output_file = f"Code/MusicTest/combined_audio_{idx}.mp3"
+    output_file = f"{output_path}audio_{idx}.mp3"
+    tts_output_file = f"{output_path}tts_{idx}.mp3"
+    combined_output_file = f"{output_path}combined_audio_{idx}.mp3"
 
 
 
@@ -27,6 +34,6 @@ for idx in range(len(urls)):
 
 combined_files = []
 for idx in range(len(urls)):
-    combined_files.append(f"Code/MusicTest/combined_audio_{idx}.mp3")
-final_output_file = "Code/MusicTest/final_audio.mp3"
+    combined_files.append(f"{output_path}combined_audio_{idx}.mp3")
+final_output_file = f"{output_path}final_audio.mp3"
 combine_audio_files(combined_files, final_output_file)
