@@ -1,3 +1,5 @@
+from functions import *
+import random
 """
 This is the main script, its here where you essentially run the whole program.
 
@@ -5,11 +7,19 @@ Args:
     file_path (str): Path to the Excel file. (MUST BE AN EXCEL FILE)
     output_path (str): Path to save the output files.
 """
-from functions import *
-
 output_path = "Code/MusicTest/"
 file_path = 'Data.xlsx' 
 urls, start_time, end_time, custom_text = read_data(file_path)
+Random = True #Randomize the order of the audio
+
+
+if Random:
+    indices = list(range(len(urls)))
+    random.shuffle(indices)
+    urls = [urls[i] for i in indices]
+    start_time = [start_time[i] for i in indices]
+    end_time = [end_time[i] for i in indices]
+    custom_text = [custom_text[i] for i in indices]
 
 for idx in range(len(urls)):
      #------------ Variables ------------#
@@ -27,8 +37,11 @@ for idx in range(len(urls)):
     downloaded_file = download_audio(youtube_url, output_file)
     if downloaded_file:
         trim_audio(downloaded_file, output_file, start, end)
-        text_to_speech(text, tts_output_file)
-        combine_audio_files([output_file, tts_output_file], combined_output_file)
+        if text:
+            text_to_speech(text, tts_output_file)
+            combine_audio_files([output_file, tts_output_file], combined_output_file)
+        else:
+            combine_audio_files(output_file, combined_output_file)
     else:
         print("Failed to download audio.")
 
