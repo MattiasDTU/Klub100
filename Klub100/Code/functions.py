@@ -1,11 +1,13 @@
 """
 This is the part of the script that only includes the functions that are used in the main script.
 """
+
 from pytubefix import YouTube
 import os
 from pydub import AudioSegment
 from gtts import gTTS
 import pandas as pd
+
 
 def read_data(file_path : str) -> list[str]:
     """
@@ -48,9 +50,7 @@ def download_audio(youtube_url: str, output_file: str) -> str:
         yt = YouTube(youtube_url)                                   # Creating YouTube object
         audio_stream = yt.streams.filter(only_audio=True).first()   # Filter for audio only
         
-        print(f"Downloading audio: {yt.title}")
         downloaded_file = audio_stream.download(output_path)
-        print("Download complete!")
         return downloaded_file
     except Exception as e:
         print(f"An error occurred: {e}")
@@ -71,11 +71,15 @@ def trim_audio(input_file: str, output_file: str, start_time: int, end_time: int
         start_time *= 1000  # Convert to milliseconds
         end_time *= 1000    # Convert to milliseconds
         audio = AudioSegment.from_file(input_file)
+        #-- Ensure start and end times are within the audio file length --#
+        if end_time > len(audio):
+            end_time = len(audio)
+        if start_time > end_time:
+            start_time = end_time - 100000
+        
         trimmed_audio = audio[start_time:end_time]
         trimmed_audio.export(output_file, format="mp3")
-        print(f"Trimmed audio saved to: {output_file}")
         os.remove(input_file)
-        print(f"Original audio file removed: {input_file}")
     except Exception as e:
         print(f"An error occurred while trimming the audio: {e}")
 
@@ -99,9 +103,12 @@ def combine_audio_files(audio_files: list, output_file: str) -> None:
         combined = AudioSegment.empty()
         
         for file in audio_files:
-            audio = AudioSegment.from_file(file)
-            combined += audio  # Append the audio file to the combined segment
-            os.remove(file)    # Remove the original audio file
+            try:
+                audio = AudioSegment.from_file(file)
+                combined += audio  # Append the audio file to the combined segment
+                os.remove(file)    # Remove the original audio file
+            except Exception as e:
+                print(f"File doesn't exist: {e}")
         combined.export(output_file, format="mp3")
         
         print(f"Combined audio saved to: {output_file}")
