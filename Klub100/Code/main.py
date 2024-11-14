@@ -49,4 +49,5 @@ combined_files = []
 for idx in range(len(urls)):
     combined_files.append(f"{output_path}combined_audio_{idx}.mp3")
 final_output_file = f"{output_path}final_audio.mp3"
+print("Combining all audio files... This may take a while!")
 combine_audio_files(combined_files, final_output_file)
