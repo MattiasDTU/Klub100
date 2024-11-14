@@ -98,9 +98,9 @@ def trim_audio(input_file: str, output_file: str, start_time: int, end_time: int
 
 
 def text_to_speech(text: str, output_file: str) -> None:
-    tts = gTTS(text, lang='en')
+    tts = gTTS(text, lang='da')
     tts.save(output_file)
-    print(f"Audio saved as {output_file}")
+    return None
 
 
 def combine_audio_files(audio_files: list, output_file: str) -> None:
@@ -124,7 +124,6 @@ def combine_audio_files(audio_files: list, output_file: str) -> None:
         normalized_combined = normalize(combined)
         limited_combined = apply_limiter(normalized_combined)
         limited_combined.export(output_file, format="mp3")
-        
-        print(f"Combined audio saved to: {output_file}")
     except Exception as e:
         print(f"An error occurred while combining audio files: {e}")
+    return None
