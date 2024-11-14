@@ -7,7 +7,17 @@ import os
 from pydub import AudioSegment
 from gtts import gTTS
 import pandas as pd
+from pydub.effects import normalize
+from pydub.effects import compress_dynamic_range
 
+def apply_limiter(audio: AudioSegment, threshold: float = -1.0) -> AudioSegment:
+    """
+    Applies a limiter to the audio to prevent it from exceeding the specified threshold.
+    Args:
+        audio (AudioSegment): The audio segment to process.
+        threshold (float): The maximum allowed dBFS value.
+    """
+    return compress_dynamic_range(audio, threshold=threshold)
 
 def read_data(file_path : str) -> list[str]:
     """
@@ -58,8 +68,8 @@ def download_audio(youtube_url: str, output_file: str) -> str:
 
 def trim_audio(input_file: str, output_file: str, start_time: int, end_time: int) -> None:
     """
-    Trims the audio file to the specified start and end times and saves the trimmed version.
-    Deleates original file, leaving only the trimmed audio file.
+    Trims and normalizes the audio file to the specified start and end times and saves the trimmed version.
+    Deletes the original file, leaving only the trimmed audio file.
 
     Args:
         input_file (str): Path to the input audio file.
@@ -78,7 +88,9 @@ def trim_audio(input_file: str, output_file: str, start_time: int, end_time: int
             start_time = end_time - 100000
         
         trimmed_audio = audio[start_time:end_time]
-        trimmed_audio.export(output_file, format="mp3")
+        normalized_audio = normalize(trimmed_audio)
+        limited_audio = apply_limiter(normalized_audio)
+        limited_audio.export(output_file, format="mp3")
         os.remove(input_file)
     except Exception as e:
         print(f"An error occurred while trimming the audio: {e}")
@@ -109,7 +121,9 @@ def combine_audio_files(audio_files: list, output_file: str) -> None:
                 os.remove(file)    # Remove the original audio file
             except Exception as e:
                 print(f"File doesn't exist: {e}")
-        combined.export(output_file, format="mp3")
+        normalized_combined = normalize(combined)
+        limited_combined = apply_limiter(normalized_combined)
+        limited_combined.export(output_file, format="mp3")
         
         print(f"Combined audio saved to: {output_file}")
     except Exception as e:
